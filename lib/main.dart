@@ -1,109 +1,100 @@
 import 'package:flutter/material.dart';
 
-void main() => runApp(new MyApp());
+void main() => runApp(new Kary());
 
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+class Kary extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return new MaterialApp(
-      title: 'Flutter Demo',
-      theme: new ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or press Run > Flutter Hot Reload in IntelliJ). Notice that the
-        // counter didn't reset back to zero; the application is not restarted.
-        primarySwatch: Colors.blue,
-      ),
-      home: new MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
+  _KaryState createState() => new _KaryState();
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+class _KaryState extends State<Kary> {
+  Choice _selectedChoice = choices[0]; // The app's "state".
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
-  @override
-  _MyHomePageState createState() => new _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
+  void _select(Choice choice) {
+    setState(() { // Causes the app to rebuild with the new _selectedChoice.
+      _selectedChoice = choice;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return new Scaffold(
-      appBar: new AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: new Text(widget.title),
-      ),
-      body: new Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: new Column(
-          // Column is also layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug paint" (press "p" in the console where you ran
-          // "flutter run", or select "Toggle Debug Paint" from the Flutter tool
-          // window in IntelliJ) to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            new Text(
-              'You have pushed the button this many times:',
+    return new MaterialApp(
+      home: new Scaffold(
+        appBar: new AppBar(
+          title: const Text('kary'),
+          actions: <Widget>[
+            new IconButton( // action button
+              icon: new Icon(choices[0].icon),
+              onPressed: () { _select(choices[0]); },
             ),
-            new Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.display1,
+            new IconButton( // action button
+              icon: new Icon(choices[1].icon),
+              onPressed: () { _select(choices[1]); },
+            ),
+            new IconButton( // action button
+              icon: new Icon(choices[2].icon),
+              onPressed: () { _select(choices[2]); },
+            ),
+            new PopupMenuButton<Choice>( // overflow menu
+              onSelected: _select,
+              itemBuilder: (BuildContext context) {
+                return choices.skip(3).map((Choice choice) {
+                  return new PopupMenuItem<Choice>(
+                    value: choice,
+                    child: new Text(choice.title),
+                  );
+                }).toList();
+              },
             ),
           ],
         ),
+        body: new Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: new ChoiceCard(choice: _selectedChoice),
+        ),
       ),
-      floatingActionButton: new FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: new Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
+
+class Choice {
+  const Choice({ this.title, this.icon });
+  final String title;
+  final IconData icon;
+}
+
+const List<Choice> choices = const <Choice>[
+  const Choice(title: 'search', icon: Icons.search),
+  const Choice(title: 'filter_list', icon: Icons.filter_list),
+  const Choice(title: 'games ', icon: Icons.games ),
+  const Choice(title: 'Bus', icon: Icons.directions_bus),
+  const Choice(title: 'Train', icon: Icons.directions_railway),
+  const Choice(title: 'Walk', icon: Icons.directions_walk),
+];
+
+class ChoiceCard extends StatelessWidget {
+  const ChoiceCard({ Key key, this.choice }) : super(key: key);
+
+  final Choice choice;
+
+  @override
+  Widget build(BuildContext context) {
+    final TextStyle textStyle = Theme.of(context).textTheme.display1;
+    return new Card(
+      color: Colors.white,
+      child: new Center(
+        child: new Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            new Icon(choice.icon, size: 128.0, color: textStyle.color),
+            new Text(choice.title, style: textStyle),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+
+
