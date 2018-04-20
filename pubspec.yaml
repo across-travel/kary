@@ -8,6 +8,9 @@ dependencies:
   cupertino_icons: ^0.1.0
   transparent_image: "^0.1.0"
   flutter_gallery_assets: "^0.0.21"
+  path_provider: "^0.4.0"
+  intl: "^0.15.4"
+  android_alarm_manager: "^0.1.0"
 
 dev_dependencies:
   flutter_test:
@@ -19,5 +22,14 @@ flutter:
   uses-material-design: true
 
   assets:
-          - assets/images/ic_link.png
-          - packages/flutter_gallery_assets/ali_connors.png
+      - assets/images/ic_link.png
+      - packages/flutter_gallery_assets/ali_connors.png
+      - assets/pic1.jpg
+      - assets/pic2.jpg
+      - assets/pic3.jpg
+      - assets/pic4.jpg
+      - assets/user1.jpg
+      - assets/user2.jpg
+      - assets/user3.jpg
+      - assets/user4.jpg
+      - assets/images/lake.jpg
